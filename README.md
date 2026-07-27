@@ -1,71 +1,98 @@
 # Customer Segmentation Analysis
 
-Analysis of 500,000+ retail transactions to segment customers by purchase frequency and identify revenue opportunities.
+Segmentation of 4,339 customers across 500,000+ retail transactions to size the revenue gap between purchase-frequency segments, and the retention opportunity inside it.
 
-## Dataset
+## The Dataset
 
-UCI Online Retail Dataset - Transaction data from a UK-based online retailer (2010-2011)
+UCI Online Retail Dataset — transaction records from a UK-based online giftware retailer, December 2010 to December 2011. Many of its customers are wholesale buyers rather than individual shoppers.
+
+**Scope after cleaning:** 397,924 transaction rows, 18,536 orders, 4,339 identifiable customers, £8.31M net revenue
+
+**Cleaning applied:**
+- Removed rows with no CustomerID (roughly a quarter of the raw file). That's real revenue no customer-level figure here accounts for
+- Removed cancellations and returns (negative quantities), which is why net revenue sits about 7% below the gross total
+- Counted orders by distinct invoice, not line item. The raw data holds one row per product per invoice, so a single order of 17 products is one order, not 17
 
 ## Objective
 
-Segment customers by purchase frequency and understand what drives customer lifetime value.
+Segment customers by how often they order, quantify what each segment is worth, and identify where the movable revenue is.
+
+## Method
+
+- Cleaned the raw transaction file as above
+- Reduced to one row per order (unique customer–invoice pairs) before counting, so order counts reflect real orders
+- Banded each customer: one-time (1 order), occasional (2–5), frequent (6+)
+- Summed revenue per customer, then averaged within each band
 
 ## Key Findings
 
-**Total Customers Analysed:** 4,339
+**Segment breakdown:**
+- One-time (1 order): 1,494 customers (34%)
+- Occasional (2–5 orders): 1,973 customers (46%)
+- Frequent (6+ orders): 872 customers (20%)
 
-**Customer Breakdown:**
-- Frequent customers (6+ orders): 4,040 (93%)
-- Occasional customers (2-5 orders): 228 (5%)
-- One-time customers (1 order): 71 (2%)
+**Average revenue per customer:**
+- One-time: £348.80
+- Occasional: £1,063.27
+- Frequent: £6,526.99
 
-**Average Revenue Per Customer:**
-- Frequent: £4,316.08
-- Occasional: £1,262.74
-- One-time: £1,379.68
+![Customer distribution by segment](Customer_Distribution_Chart.png)
+
+![Average revenue per customer by segment](Customer_Value_Chart.png)
 
 ## Insights
 
-**1. Exceptional customer loyalty**  
-93% of customers are frequent buyers (6+ orders), indicating strong product-market fit and high customer satisfaction. This retention rate is significantly above typical retail benchmarks.
+**1. Most customers don't come back**
 
-**2. Frequent customers drive 3.4x more value**  
-Frequent buyers spend £4,316 on average compared to £1,263 for occasional customers, a 3.4x difference in lifetime value.
+Only 20% of customers placed six or more orders, and a third ordered once and never came back. Most of the customer base sits below the frequent tier, which is the retention problem worth solving.
 
-**3. The 228 occasional customers represent an immediate opportunity**  
-Moving just 20% into the frequent category could generate approximately £696,000 in additional revenue.
+**2. The customers who do return are worth far more**
+
+A frequent customer is worth £6,527 on average, against £1,063 for an occasional one and £349 for a one-time buyer. Frequent buyers are worth 6.1x an occasional customer and 18.7x a one-time one. Revenue rises steadily with frequency, with no crossover between bands. That's what you'd expect, and it wasn't true of an earlier version of this analysis, before the order counts were corrected.
+
+**3. The occasional segment is where the movable money is**
+
+The gap between an occasional customer and a frequent one is £5,464. There are 1,973 occasional customers already ordering more than once. Converting 20% of them into frequent buyers would be worth approximately £2.16M.
+
+That figure is opportunity sizing, not a forecast. It's the size of the prize if a fifth of the occasional segment moved up a tier, which is what tells you whether the retention question is worth investing in. It doesn't assume the conversion is easy or free.
 
 ## Business Implications
 
-**Acquisition over retention:** With only 2% one-time buyers, the challenge isn't converting existing customers. Focus on attracting new customers and ensuring first-time buyers have a positive initial experience.
+**The challenge is retention, not acquisition.** With 80% of customers below the frequent tier and frequent buyers worth six times an occasional buyer, the money is in moving existing customers up, not only in finding new ones.
 
-**Replicate what works:** 93% frequency suggests something is driving exceptional loyalty. Investigate which products, experiences, or touchpoints create this retention and apply those insights to acquisition strategy.
+**The occasional segment is the target.** 1,973 customers, already buying, £5,464 each below the frequent benchmark. Understanding what stops them short of six orders is a narrower and more answerable question than broad acquisition.
 
-**Target occasional buyers:** The 228 occasional customers are already engaged but haven't crossed into frequent territory. Targeted campaigns encouraging a 6th purchase may shift them into the high-value category.
+**Frequency alone is a blunt segmentation.** A next step would add order value, separating large infrequent buyers from small frequent ones. Those are likely different behaviours that need different handling.
 
-**First 90 days matter:** With so few one-time buyers, either first-time customers quickly become repeat buyers, or those who don't return aren't captured here. Understanding the early post-purchase period is critical.
+**The excluded 25% matters.** A quarter of transaction rows have no customer attached. If those skew toward any order size or period, every figure here shifts.
 
 ## Next Steps to Investigate
 
-1. What triggers the second purchase?
-2. How does first purchase behaviour differ between frequent and occasional customers?
-3. What prevents occasional customers from reaching 6+ orders?
-4. Which products correlate with higher repeat purchase rates?
-5. How does purchase frequency change over customer lifetime?
+1. Order-value distribution within each frequency band
+2. Revenue concentration across the top customers
+3. What distinguishes an occasional customer who reaches six orders from one who stops at five
+4. Whether the unattributed 25% of rows differs systematically from the rest
+
+## A Note on Method
+
+Counting orders correctly matters here. Because the raw data stores one row per product, a naive count treats a single basket of 17 items as 17 orders and badly distorts the segments. This analysis counts distinct invoices, and the workbook keeps the live formulas so every figure traces to its calculation.
 
 ## Tools & Methods
 
-- Microsoft Excel for data cleaning and analysis
-- Pivot tables for customer segmentation
-- IF statements for segment categorisation
-- Data validation and filtering for 500k+ row dataset
+- Microsoft Excel for cleaning, analysis, and charting
+- PivotTables for order and revenue aggregation
+- VLOOKUP, COUNTIF, AVERAGEIF for segmentation and per-band figures
+- Remove Duplicates to reduce line items to distinct orders
 
 ## Files
 
-- `Online_Retail_Customer_Analysis_Summary.xlsx` - Analysis with pivot tables, charts, and insights
-- `Customer_Distribution_Chart.png` - Customer breakdown by segment
-- `Customer_Value_Chart.png` - Average spend by customer type
+- `Online_Retail_Analysis_Rebuilt.xlsx` — full analysis with live formulas, pivots, and charts
+- `Customer_Distribution_Chart.png` — customer count by segment
+- `Customer_Value_Chart.png` — average revenue by segment
+- `README.md` — project documentation
 
 ---
 
-*Raw dataset available from [UCI Machine Learning Repository](https://archive.ics.uci.edu/dataset/352/online+retail)*
+Built: January 2026 · Rebuilt: July 2026
+
+Skills: Excel · Customer Segmentation · Data Cleaning · Business Analysis
