@@ -77,12 +77,15 @@ That figure is opportunity sizing, not a forecast. It's the size of the prize if
 
 Counting orders correctly matters here. Because the raw data stores one row per product, a naive count treats a single basket of 17 items as 17 orders and badly distorts the segments. This analysis counts distinct invoices, and the workbook keeps the live formulas so every figure traces to its calculation.
 
+I later rebuilt the order count independently in Power Query, removing rows with no CustomerID and cancelled orders, then grouping by invoice. It landed on the same 18,536 orders. Revenue came out about 7% higher than the £8.31M reported here. The gap traces to non-product line items, postage charges and manual price adjustments, that this second pass didn't filter out separately. Order count was the figure I built the check to confirm, and it held.
+
 ## Tools & Methods
 
 - Microsoft Excel for cleaning, analysis, and charting
 - PivotTables for order and revenue aggregation
 - VLOOKUP, COUNTIF, AVERAGEIF for segmentation and per-band figures
 - Remove Duplicates to reduce line items to distinct orders
+- Power Query, used to independently verify the order count and revenue cleaning logic
 
 ## Files
 
